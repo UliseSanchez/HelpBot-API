@@ -1,2 +1,34 @@
-# HelpBot
-A chatbot dedicated to help elder people with their goverment procedures.
+# ChatGPT API Wrapper
+
+This is a FastAPI-based API that connects users to ChatGPT via OpenAI's API and saves conversation history in a PostgreSQL database.
+
+## Setup
+
+1. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. Set up PostgreSQL database:
+   - Create a database named `chatbot_db` (or update `.env` accordingly).
+   - Update `.env` with your database credentials and OpenAI API key.
+
+3. Create database tables:
+   ```bash
+   python create_tables.py
+   ```
+
+4. Run the server:
+   ```bash
+   uvicorn main:app --reload
+   ```
+
+## API Endpoints
+
+- `POST /chat`: Send a message to ChatGPT. Body: `{"user_id": "string", "message": "string"}`
+- `GET /history/{user_id}`: Get conversation history for a user.
+
+## Environment Variables
+
+- `OPENAI_API_KEY`: Your OpenAI API key.
+- `DATABASE_URL`: PostgreSQL connection string.
