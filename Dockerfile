@@ -5,16 +5,11 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Copy the current directory contents into the container at /app
-COPY . /app
+COPY . .
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose the port the app runs on (adjust if needed)
-EXPOSE 8000
+RUN chmod +x entrypoint.sh
 
-# Define environment variable (optional)
-ENV PYTHONUNBUFFERED=1
-
-# Run the application (adjust the command as needed)
-CMD ["python", "main.py"]
+CMD [ "./entrypoint.sh" ]

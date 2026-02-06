@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import Message
+from models.message import Message
 from typing import List
 
 def get_messages(db: Session, user_id: str) -> List[dict]:
