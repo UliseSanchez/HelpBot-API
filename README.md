@@ -4,38 +4,69 @@ This is a FastAPI-based API that connects users to ChatGPT via OpenAI's API and 
 
 ## Setup
 
-1. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+### 1. Clone the repository
 
+```bash
+git clone https://github.com/UliseSanchez/HelpBot.git
+cd HelpBot
+```
 
-2. Set up PostgreSQL database:
-   - Create a database named `chatbot_db` (or update `.env` accordingly).
-   - Update `.env` with your database credentials and OpenAI API key.
+### 2. Set up the database with Docker Compose
 
-3. Create database tables (Alembic migrations recommended):
-   - Initialize Alembic (first time only):
-     ```bash
-     alembic init alembic
-     ```
-   - Generate migration for your models:
-     ```bash
-     alembic revision --autogenerate -m "create tables"
-     ```
-   - Apply migrations to create tables:
-     ```bash
-     alembic upgrade head
-     ```
-   - Alternatively, you can use:
-     ```bash
-     python create_tables.py
-     ```
+If you want to use PostgreSQL with Docker Compose:
 
-4. Run the server:
-   ```bash
-   uvicorn main:app --reload
-   ```
+```bash
+docker-compose up -d db
+```
+
+This will start a PostgreSQL database as defined in `docker-compose.yaml`.
+
+Update your `.env` file with the correct `DATABASE_URL` for PostgreSQL:
+```
+DATABASE_URL=postgresql://postgres:chatbotpostgres@localhost:5432/chatbot
+```
+
+### 3. Create and activate a virtual environment
+
+```bash
+python -m venv venv
+venv\Scripts\activate  # Windows
+# Or
+source venv/bin/activate  # Linux/Mac
+```
+
+### 4. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 5. Update `.env` with your database credentials and OpenAI API key
+
+## Create database tables (Alembic migrations recommended)
+
+- Initialize Alembic (first time only):
+  ```bash
+  alembic init alembic
+  ```
+- Generate migration for your models:
+  ```bash
+  alembic revision --autogenerate -m "create tables"
+  ```
+- Apply migrations to create tables:
+  ```bash
+  alembic upgrade head
+  ```
+- Alternatively, you can use:
+  ```bash
+  python create_tables.py
+  ```
+
+## Run the server
+
+```bash
+uvicorn main:app --reload
+```
 
 ## API Endpoints
 
