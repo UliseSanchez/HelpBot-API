@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.responses import RedirectResponse
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from database import get_db
@@ -10,6 +11,15 @@ from services.chatbot_service import message_handler
 
 app = FastAPI(title="ChatGPT API Wrapper", description="API to interact with ChatGPT and save conversation history")
 
+
+# CONFIGURACIÓN DE CORS -
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"], # El puerto por defecto de Vite/React
+    allow_credentials=True,
+    allow_methods=["*"], # Permite GET, POST, etc.
+    allow_headers=["*"], # Permite todos los headers
+)
 class ChatRequest(BaseModel):
     user_id: str
     message: str
@@ -29,7 +39,7 @@ async def chat(request: ChatRequest, db: Session = Depends(get_db)):
         #Redirect to the government page
         result = message_handler(request.message, context)
         if result["action"] == "redirect_sat_citas":
-            return RedirectResponse(url="https://citas.sat.gob.mx/")
+            return {"reply": "Redirigiendo a la página de citas del SAT...", "redirect_url": "https://citas.sat.gob.mx/"}
    
 
         # Save assistant message
