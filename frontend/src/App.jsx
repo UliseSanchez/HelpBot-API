@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { Input, Button, List, Card, Typography, Space, Layout, ConfigProvider } from 'antd';
 import { SendOutlined, RobotOutlined, UserOutlined } from '@ant-design/icons';
+import BotFormattedReply from './BotFormattedReply';
 
 const { TextArea } = Input;
 const { Title, Text } = Typography;
@@ -18,7 +19,7 @@ function App() {
   useEffect(() => {
     const loadHistory = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/history/test_user_1');
+        const response = await axios.get('http://localhost:8000/history/test_user');
         const history = response.data.history.map(msg => ({
           role: msg.role,
           content: msg.content
@@ -154,9 +155,13 @@ return (
                         wordBreak: 'break-word',
                         textAlign: 'left'
                       }}>
-                        <Text style={{ color: 'inherit', fontSize: '15px', display: 'inline-block' }}>
-                          {item.content}
-                        </Text>
+                        {item.role === 'assistant' ? (
+                          <BotFormattedReply content={item.content} />
+                        ) : (
+                          <Text style={{ color: 'inherit', fontSize: '15px', display: 'inline-block' }}>
+                            {item.content}
+                          </Text>
+                        )}
                       </div>
                     </div>
                   </List.Item>
