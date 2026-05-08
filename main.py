@@ -1,8 +1,10 @@
+import base64
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
+from typing import Optional
 from database import get_db
 from crud import get_messages, save_message
 from config import settings
@@ -23,6 +25,8 @@ app.add_middleware(
 class ChatRequest(BaseModel):
     user_id: str
     message: str
+    image_base64: Optional[str] = None
+    image_mime_type: Optional[str] = None
 
 @app.post("/chat")
 async def chat(request: ChatRequest, db: Session = Depends(get_db)):
@@ -33,18 +37,17 @@ async def chat(request: ChatRequest, db: Session = Depends(get_db)):
         # Save user message
         save_message(db, request.user_id, "user", request.message)
 
-        # Optionally, you can pass the history as context
         context = "\n".join([msg["content"] for msg in history if msg["role"] == "assistant"])
-        reply = ai_service.ask(request.message, context)
-        #Redirect to the government page
-        result = message_handler(request.message, context)
+
+        image_bytes = base64.b64decode(request.image_base64) if request.image_base64 else None
+        result = message_handler(request.message, context, image_bytes, request.image_mime_type)
+
         if result["action"] == "redirect_sat_citas":
             return {"reply": "Redirigiendo a la página de citas del SAT...", "redirect_url": "https://citas.sat.gob.mx/"}
-   
 
-        # Save assistant message
+        reply = result["reply"]
         save_message(db, request.user_id, "assistant", reply)
-        return {"reply": reply}
+        return {"reply": reply, "popup_url": result["popup_url"]}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

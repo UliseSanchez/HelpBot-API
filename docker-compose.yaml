@@ -3,7 +3,7 @@ services:
     image: postgres:13
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: chatbotpostgres
+      POSTGRES_PASSWORD: postgres123
       POSTGRES_DB: chatbot
     ports:
       - "5432:5432"
@@ -19,4 +19,4 @@ services:
     ports:
       - "8000:8000"
 volumes:
-  postgres_data:
+  db_data:
